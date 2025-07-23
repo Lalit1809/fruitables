@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Profile</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+        <li class="breadcrumb-item active text-white">Profile</li>
+    </ol>
+</div>
+<!-- Single Page Header End -->
+
+
+<!-- 404 Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <!-- profile page  -->
+        <div class="container-xl px-4 mt-4">
+            <div class="row">
+                <div class="col-xl-4">
+                    <!-- Profile picture card-->
+                    <div class="card mb-4 mb-xl-0">
+                        <div class="card-header">Profile Picture</div>
+                        <div class="card-body text-center">
+                            <!-- Profile picture image-->
+                            
+                            <img class="img-account-profile rounded-circle mb-2" src="{% if profile.image %}{{ profile.image.url }}{% else %}{% static 'img/images1234.png' %}{% endif %}" alt="image">
+                            <!-- Profile picture help block-->
+                            <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+                            <!-- Profile picture upload button-->
+                            <!-- <button class="btn btn-primary" type="button">Upload new image</button> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-8">
+                    <!-- Account details card-->
+                    <div class="card mb-4">
+                        <div class="card-header">Account Details</div>
+                        <div class="card-body">
+                            <form>
+                                <!-- Form Group (username)-->
+                                <div class="mb-3">
+                                    <label class="small mb-1" for="inputUsername">Username</label>
+                                    <input class="form-control" id="inputUsername" type="text"
+                                        value="{{ profile.username }}" disabled>
+                                </div>
+                                <!-- Form Group (email address)-->
+                                <div class="mb-3">
+                                    <label class="small mb-1" for="inputEmailAddress">Email address</label>
+                                    <input class="form-control" id="inputEmailAddress" type="email"
+                                         value="{{ profile.email }}"disabled>
+                                </div>
+                                <!-- Form Group (State)-->
+                                <div class="md-3">
+                                    <label class="small mb-1" for="inputFirstName">State</label>
+                                    <input class="form-control" id="inputFirstName" type="text"
+                                        value="{{ profile.state }}"disabled>
+                                </div>
+                                <!-- Form Group (City)-->
+                                <div class="md-3">
+                                    <label class="small mb-1" for="inputLastName">City</label>
+                                    <input class="form-control" id="inputLastName" type="text"
+                                        value="{{ profile.city }}"disabled>
+                                </div>
+                                <!-- Form Group (Country)-->
+                                <div class="md-3">
+                                    <label class="small mb-1" for="inputOrgName">Country</label>
+                                    <input class="form-control" id="inputOrgName" type="text" value="{{ profile.country }}"disabled>
+                                </div>
+
+
+
+                                <!-- Save changes button-->
+                                    <a class="btn btn-primary mt-3" href="{% url 'edit' %}">Edit</a>
+                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="container_main">
+
+                <hr>
+
+                <div class="user_details">
+                    <p>User Name: {{profile.username}}</p>
+                    <p>Email: {{profile.email}} </p>
+                    <p>State: {{profile.state}}</p>
+                    <p>Country: {{profile.country}}</p>
+                    <p>City: {{profile.city}}</p>
+                </div>
+                <button class="edit_btn" type="button"><a href="{% url 'edit' %}">Edit</a></button>
+
+            
+        </div> -->
+        <!-- profile page end -->
+    </div>
+</div>
+<!-- 404 End -->
+
+
+
+
+{% endblock %}

@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+
+<!-- Single Page Header start -->
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">Edit</h1>
+    <ol class="breadcrumb justify-content-center mb-0">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+        <li class="breadcrumb-item active text-white">Edit</li>
+    </ol>
+</div>
+<!-- Single Page Header End -->
+
+
+<!-- 404 Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <!-- profile page  -->
+        <div class="container-xl px-4 mt-4">
+            <div class="row">
+                <div class="col-xl-4">
+                    <!-- Profile picture card-->
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="card mb-4 mb-xl-0">
+                            <div class="card-header">Profile Picture</div>
+                            <div class="card-body text-center">
+                                <!-- Profile picture image-->
+                                <img class="img-account-profile rounded-circle mb-2"
+                                    src="{% if edit.image %}{{ edit.image.url }}{% else %}{% static 'img/images1234.png' %}{% endif %}"
+                                    alt="image">
+                                <!-- Profile picture help block-->
+                                <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+                                <!-- Profile picture upload button-->
+                                <label for="pimage" class="btn btn-primary" type="button">Upload new image</label>
+                                <input type="file" id="pimage" name="image" style="display: none;">
+                            </div>
+                        </div>
+                </div>
+                <div class="col-xl-8">
+                    <!-- Account details card-->
+                    <div class="card mb-4">
+                        <div class="card-header">Account Details</div>
+                        <div class="card-body">
+
+                            <!-- Form Group (username)-->
+                            <div class="mb-3">
+                                <label class="small mb-1">Username</label>
+                                <input class="form-control" type="text" value="{{ edit.username }}" name="username">
+                            </div>
+                            <!-- Form Group (email address)-->
+                            <div class="mb-3">
+                                <label class="small mb-1">Email address</label>
+                                <input class="form-control" type="email" value="{{ edit.email }}" name="email">
+                            </div>
+                            <!-- Form Group (State)-->
+                            <div class="md-3">
+                                <label class="small mb-1">State</label>
+                                <input class="form-control" type="text" value="{{ edit.state }}" name="state">
+                            </div>
+                            <!-- Form Group (City)-->
+                            <div class="md-3">
+                                <label class="small mb-1">City</label>
+                                <input class="form-control" type="text" value="{{ edit.city }}" name="city">
+                            </div>
+                            <!-- Form Group (Country)-->
+                            <div class="md-3">
+                                <label class="small mb-1">Country</label>
+                                <input class="form-control" type="text" value="{{ edit.country }}" name="country">
+                            </div>
+
+                            <!-- <div class="md-3">
+                                    <label class="small mb-1" >Password</label>
+                                    <input class="form-control"type="password" value="{{ edit.password }}" name="password">
+                                </div> -->
+
+                            <!-- <div class="md-3">
+                                    <label class="small mb-1" >Upload image</label>
+                                    <input class="form-control" type="file" value="{{ edit.image }}" name="image">
+                                </div> -->
+
+
+
+                            <!-- Save changes button-->
+                            <button class="  btn btn-primary mt-3">Save</button>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- edit page end -->
+    </div>
+</div>
+<!-- 404 End -->
+
+{% endblock %}
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext">
+    <title>Edit</title>
+</head>
+<style>
+    body {
+        background-color: rgb(207, 203, 203);
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    * {
+        box-sizing: border-box
+    }
+
+    input[type=image],
+    input[type=email],
+    input[type=text],
+    input[type=password] {
+        width: 100%;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        display: inline-block;
+        border: none;
+        background: #f1f1f1;
+    }
+
+    input[type=image]:focus,
+    input[type=email]:focus,
+    input[type=text]:focus,
+    input[type=password]:focus {
+        background-color: #ddd;
+        outline: none;
+    }
+
+    hr {
+        border: 1px solid black;
+        margin-bottom: 25px;
+    }
+
+
+    button {
+
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        opacity: 0.9;
+    }
+
+    button:hover {
+        opacity: 1;
+    }
+
+    .save_btn {
+        background-color: green;
+        border-radius: 20%;
+        text-align: center;
+        width: 100%;
+    }
+
+    .container {
+        background-color: white;
+        border-radius: 30px;
+        margin-top: 50px;
+        margin-bottom: 50px;
+        width: 40%;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+
+    @media screen and (max-width: 300px) {
+        .signupbtn {
+            width: 100%;
+        }
+    }
+</style>
+
+<body>
+    <form method="post" class="signupform" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="container">
+            <h1>Edit</h1>
+
+
+            <hr>
+
+            <label for="user-name"><b>User Name</b></label>
+            <input type="text" name="username" value="{{ edit.username }}">
+
+            <label for="email"><b>Email</b></label>
+            <input type="email" name="email" value="{{ edit.email }}">
+
+            <label for="state"><b>State</b></label>
+            <input type="text" name="state" value="{{ edit.state }}">
+
+            <label for="city"><b>City</b></label>
+            <input type="text" name="city" value="{{ edit.city }}">
+
+            <label for="country"><b>Country</b></label>
+            <input type="text" name="country" value="{{ edit.country }}">
+
+            <label for="psw"><b>Password</b></label>
+            <input type="password" name="password" value="{{ edit.password }}">
+
+
+            <label for="image"><b>Image</b></label>
+            <input type="file" name="image" value="{{ edit.image }}">
+
+            <div class="clearfix">
+                <button type="submit" class="save_btn">Save</button>
+            </div>
+        </div>
+    </form>
+</body>
+
+</html> -->
