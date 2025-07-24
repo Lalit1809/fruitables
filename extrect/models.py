@@ -36,7 +36,7 @@ class Product(models.Model):
    image = models.ImageField(null=True,blank=True)
    title = models.CharField(max_length=50)
    detail = models.TextField()
-   price = models.CharField(max_length=60)
+   price = models.PositiveIntegerField(max_length=60)
    quantity = models.PositiveIntegerField(default=1)
    slug = AutoSlugField(populate_from = 'title')
    

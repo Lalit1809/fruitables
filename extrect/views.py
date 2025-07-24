@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
+from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 # def category(request, slug):
 #     categorys = get_object_or_404(Category,slug=slug)
@@ -32,12 +33,81 @@ def shop_detail(request,slug):
     return render(request,'shop-detail.html',context)
 
 def cart(request):
+    carts = request.session.get('cart')
+    cart_items = []
+    total_price = 0
+    total_quantity = 0
+    if carts:
+        for product_id,cart_item in carts.items():
+            prod = Product.objects.get(id=product_id)
+            quantity = cart_item['quantity']
+            item_price = prod.price * quantity
+            print(item_price,"itemmmmmmmmmmmmmmmmmmmmmmm")
+            total_price = item_price + total_price
+            total_quantity = quantity + total_quantity
+            cart_items.append({'prod':prod,'quantity':quantity,"item_price":item_price})
+            context = {'cart_items':cart_items,'total_price':total_price}
+            
+        
+        return render(request, 'cart.html', context)
 
-    return render(request,'cart.html')
+    else:
+        messages.error(request, 'Cart is empty :-')
+        return render(request, 'cart.html')
+# create a view for remove cart
+def remove_cart(request,product_id):
+     cart = request.session.get('cart', {})
+     if str(product_id) in cart:
+        del cart[str(product_id)]
+        request.session['cart'] = cart
+        
+     return redirect('cart')
+
+    
+
+def add_cart(request,product_id):
+    product = get_object_or_404( Product,id=product_id)
+    print(product,'productttttttttttttttttttttt')
+    cart = request.session.get('cart', {})
+    if str(product_id) in cart:
+        cart[str(product_id)]['quantity'] += 1
+    else:
+        cart[str(product_id)] = {
+            'title': product.title,
+            'price': product.price,
+            'product_id':product.id,
+            'quantity': 1
+        }   
+
+    request.session['cart'] = cart
+    print(request.session['cart'],'fdgs')
+    
+    return redirect('cart')
+
 
 def chackout(request):
+    carts = request.session.get('cart')
+    cart_items = []
+    total_price = 0
+    total_quantity = 0
+    if carts:
+        for product_id,cart_item in carts.items():
+            prod = Product.objects.get(id=product_id)
+            quantity = cart_item['quantity']
+            item_price = prod.price * quantity
+            print(item_price,"itemmmmmmmmmmmmmmmmmmmmmmm")
+            total_price = item_price + total_price
+            total_quantity = quantity + total_quantity
+            cart_items.append({'prod':prod,'quantity':quantity,"item_price":item_price})
+            context = {'cart_items':cart_items,'total_price':total_price,'total_quantity':total_quantity}
+            
+        
+        return render(request, 'chackout.html', context)
 
-    return render(request,'chackout.html')
+    else:
+        messages.error(request, 'Cart is empty :-')
+
+    return render(request,'chackout.html',context)
 
 def testimonial(request):
 
