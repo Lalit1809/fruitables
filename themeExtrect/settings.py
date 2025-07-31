@@ -129,3 +129,11 @@ AUTH_USER_MODEL = 'extrect.User'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Adjust path if needed
 MEDIA_URL = '/media/'  # URL prefix to access media files
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'jangidlalit1802@gmail.com'
+EMAIL_HOST_PASSWORD = 'gfrd lrmn tkjq kiki'

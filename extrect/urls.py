@@ -19,5 +19,9 @@ urlpatterns = [
     path('edit/',views.edit_page,name='edit'),
     path('add_cart/<int:product_id>',views.add_cart , name='add_cart'),
     path('remove_cart/<int:product_id>',views.remove_cart, name='remove_cart'),
+    path('send-email/',views.send_mail_page,name='send-email'),
+    path('forgot-password/',views.password_forgot,name='forgot-password'),
+    path('otp/',views.enter_otp,name='otp'),
+    path('change-password/',views.change_password,name='c-password'),
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

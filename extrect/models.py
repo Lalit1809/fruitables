@@ -26,6 +26,7 @@ class User(AbstractUser):
     city = models.CharField(null=True,blank=True)
     country = models.CharField(null=True,blank=True)
     image = models.ImageField(null=True,blank=True)
+    email_otp = models.CharField(max_length=6, null=True, blank=True)
 
     def __str__(self):
      return self.username

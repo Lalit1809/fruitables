@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otp</title>
+    <style>
+        .otp-container {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: #ccc;
+            margin: auto;
+            margin-top: 5%;
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .otp-input-group {
+            display: flex;
+            gap: 10px;
+            /* Spacing between input boxes */
+            margin-top: 15px;
+        }
+
+        .otp-input {
+            width: 70px;
+            height: 40px;
+            text-align: center;
+            font-size: 1.2em;
+            border: 1px solid black;
+            border-radius: 4px;
+            background-color: #ccc;
+        }
+
+        .otp-input:focus {
+            border-color: #007bff;
+            /* Highlight on focus */
+            outline: none;
+        }
+
+        .Validate {
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <form method="post" class="otp-container">
+        <p class="otp-instructions">Enter the 4-digit OTP sent to your phone:</p>
+        <div class="otp-input-group">
+            <input type="text" maxlength="4" class="otp-input" placeholder="OTP" name="opt">
+        </div>
+        {% if messages %}
+        {% for message in messages %}
+        <div>
+            <p style="color: red;">{{ message }}</p>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <a href="#">
+            <button class="Validate">Validate</button>
+        </a>
+    </form>
+
+</body>
+
+</html>
