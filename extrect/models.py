@@ -2,6 +2,15 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django_extensions.db.fields import AutoSlugField
+from django.utils import timezone
+
+STATUS_CHOICES=[
+      ('Pending','Pending'),
+      ('Paid','Paid'),
+      ('UnPaid','UnPaid'),
+      ('Shipped','Shipped'),
+      ('Cancelled','Cancelled')
+   ]
 
 class Contect(models.Model):
    name = models.CharField(max_length=40)
@@ -37,12 +46,41 @@ class Product(models.Model):
    image = models.ImageField(null=True,blank=True)
    title = models.CharField(max_length=50)
    detail = models.TextField()
-   price = models.PositiveIntegerField(max_length=60)
+   price = models.PositiveIntegerField()
    quantity = models.PositiveIntegerField(default=1)
    slug = AutoSlugField(populate_from = 'title')
    
    def __str__ (self):
      return self.title
+   
+class Order(models.Model):
+   user = models.ForeignKey(User,on_delete=models.CASCADE)
+   product = models.ManyToManyField(Product,null=True,blank=True)
+   quentity = models.PositiveIntegerField()
+   created_date = models.DateTimeField(default=timezone.now)    
+   status = models.CharField(max_length=10,choices=STATUS_CHOICES,default='Pending')
+   update_at = models.DateTimeField(default=timezone.now)
+   
+   total_amount = models.IntegerField()
+   
+   def __str__(self):
+      return self.user.username
+      
+class Billing_details(models.Model):
+   order = models.OneToOneField(Order,on_delete=models.CASCADE)
+   firstname = models.CharField(max_length=10)
+   lastname = models.CharField(max_length=10)
+   companyname = models.CharField(max_length=20,null=True,blank=True)
+   address = models.CharField(max_length=50)
+   city = models.CharField(max_length=20)
+   country = models.CharField(max_length=20)
+   pincode = models.CharField(max_length=10)
+   phonenumber = models.CharField(max_length=10)
+   email = models.EmailField()
+   message = models.TextField(null=True,blank=True)
+
+   def __str__ (self):
+      return self.firstname
    
 
 

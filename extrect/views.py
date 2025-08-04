@@ -17,27 +17,35 @@ from django.contrib.auth import authenticate, login, logout
 #     return render(request, '')
 
 def home(request):
+    carts = request.session.get('cart', {}) 
+    product_count = len(carts)
+    print("Total unique products in session cart:", product_count)
     product = Product.objects.all()
-    context = {'products':product}
+    context = {'products':product,'product_count':product_count}
 
     return render(request,'index.html',context)
 
 def shop(request):
+    carts = request.session.get('cart', {}) 
+    product_count = len(carts)
     products = Product.objects.all()
     categorys = Category.objects.all()
-    context = {'category':categorys,'products':products}
+    context = {'category':categorys,'products':products,'product_count':product_count}
 
     return render(request,'shop.html',context)
 
 def shop_detail(request,slug):
+    carts = request.session.get('cart', {}) 
+    product_count = len(carts)
     products = get_object_or_404(Product, slug=slug)
     categorys = Category.objects.all()
-    context = {'category':categorys,'product':products}
+    context = {'category':categorys,'product':products,'product_count':product_count}
 
     return render(request,'shop-detail.html',context)
 
 def cart(request):
-    carts = request.session.get('cart')
+    carts = request.session.get('cart', {}) 
+    product_count = len(carts)
     cart_items = []
     total_price = 0
     total_quantity = 0
@@ -50,7 +58,7 @@ def cart(request):
             total_price = item_price + total_price
             total_quantity = quantity + total_quantity
             cart_items.append({'prod':prod,'quantity':quantity,"item_price":item_price})
-            context = {'cart_items':cart_items,'total_price':total_price}
+            context = {'cart_items':cart_items,'total_price':total_price, 'total_quantity': total_quantity,'product_count':product_count}
             
         
         return render(request, 'cart.html', context)
@@ -58,9 +66,46 @@ def cart(request):
     else:
         messages.error(request, 'Cart is empty :-')
         return render(request, 'cart.html')
+    
+
+# create a viewss for update_card quentity and price
+@csrf_exempt
+def update_cart(request):
+    if request.method == "POST":
+        action = request.POST.get('action')
+        product_id = request.POST.get('product_id')
+        print(action,'this is action which is comming from ajax')
+        print(product_id,'this is product id which is commimg from ajax')
+        product = Product.objects.get(id=product_id)
+        print(product,'this is product')
+        cart = request.session.get('cart', {})
+        print(cart,'this is cart')
+
+        if str(product_id) in cart:
+            quantity = cart[str(product_id)]['quantity']
+
+            if action == "increase":
+             quantity += 1
+            if action == "decrease":
+             quantity = max(1, quantity - 1)
+
+            cart[str(product_id)]['quantity'] = quantity
+            request.session['cart'] = cart
+            # return redirect('cart')
+            item_price = product.price * quantity
+            total_price = sum(Product.objects.get(id=int(pid)).price * data['quantity'] for pid, data in cart.items())
+
+        
+        
+    # return render(request,'cart.html')
+    return JsonResponse({'success':True,'item_price': item_price,'total_price': total_price,'quantity': quantity})   
+ 
+
+
 # create a view for remove cart
 def remove_cart(request,product_id):
      cart = request.session.get('cart', {})
+     print(product_id,':-this is cart id')
      if str(product_id) in cart:
         del cart[str(product_id)]
         request.session['cart'] = cart
@@ -88,9 +133,78 @@ def add_cart(request,product_id):
     
     return redirect('home')
 
-
+@csrf_exempt
 def chackout(request):
-    carts = request.session.get('cart')
+    carts = request.session.get('cart', {}) 
+    product_count = len(carts)
+    cart_items = []
+    total_price = 0
+    total_quantity = 0
+
+    if carts:
+        for product_id, cart_item in carts.items():
+         prod = Product.objects.get(id=product_id)
+         quantity = cart_item['quantity']
+         item_price = prod.price * quantity
+         total_price += item_price
+         total_quantity += quantity
+         cart_items.append({'prod': prod, 'quantity': quantity, "item_price": item_price})
+
+        context = {'cart_items': cart_items, 'total_price': total_price, 'total_quantity': total_quantity,'product_count':product_count}
+
+        if request.method == "POST":
+            firstname = request.POST.get('firstname')
+            print(firstname,'this is first name')
+            lastname = request.POST.get('lastname')
+            companyname = request.POST.get('companyname')
+            address = request.POST.get('address')
+            city = request.POST.get('city')
+            country = request.POST.get('country')
+            pincode = request.POST.get('pincode')
+            phonenumber = request.POST.get('phonenumber')
+            email = request.POST.get('email')
+            message = request.POST.get('message')
+
+            # for item in cart_items:
+            #     order = Order.objects.create(user=request.user,quentity=item['quantity'],total_amount=item['item_price'],)
+            #     order.product.add(item['prod'])
+
+                    # Create single order with total quantity
+            order = Order.objects.create(
+                user=request.user,
+                quentity=total_quantity,
+                total_amount=total_price,
+            )
+
+                # Add all products to the M2M field
+            order.product.set([item['prod'] for item in cart_items])
+            billing_details=Billing_details.objects.create( 
+                order=order, 
+                firstname=firstname, 
+                lastname=lastname, 
+                companyname=companyname, 
+                address=address,
+                city=city,
+                country=country,
+                pincode=pincode,
+                phonenumber=phonenumber,
+                email=email,
+                message=message)
+
+            
+            messages.success(request, "Order placed successfully.")
+            return redirect('payment')
+
+        return render(request, 'chackout.html', context)
+
+    else:
+            messages.error(request, 'Cart is empty :-')
+            return redirect('cart')
+
+
+def payment (request):
+    carts = request.session.get('cart', {}) 
+    product_count = len(carts)
     cart_items = []
     total_price = 0
     total_quantity = 0
@@ -103,25 +217,33 @@ def chackout(request):
             total_price = item_price + total_price
             total_quantity = quantity + total_quantity
             cart_items.append({'prod':prod,'quantity':quantity,"item_price":item_price})
-            context = {'cart_items':cart_items,'total_price':total_price,'total_quantity':total_quantity}
+            context = {'cart_items':cart_items,'total_price':total_price, 'total_quantity': total_quantity,'product_count':product_count}
             
         
-        return render(request, 'chackout.html', context)
+        return render(request, 'payment.html', context)
 
     else:
         messages.error(request, 'Cart is empty :-')
 
-    return render(request,'chackout.html',context)
+    return render(request,"payment.html")
+
+
 
 def testimonial(request):
+    carts = request.session.get('cart', {}) 
+    product_count=len(carts)
+    context={'product_count':product_count}
 
-    return render(request,'testimonial.html')
+    return render(request,'testimonial.html',context)
 
 def E404(request):
 
     return render(request,'404.html')
 @csrf_exempt
 def contact(request):
+    carts = request.session.get('cart', {}) 
+    product_count=len(carts)
+    context = {'product_count':product_count}
     if request.method == "POST":
         name = request.POST.get('names')
         email = request.POST.get('emails')
@@ -131,7 +253,7 @@ def contact(request):
         contects = Contect.objects.create(name=name,email=email,message=message)
         return redirect("home")
 
-    return render(request,'contact.html')
+    return render(request,'contact.html',context)
 
 @csrf_exempt
 def signUp(request):
@@ -187,16 +309,20 @@ def sign_out(request):
 
 @csrf_exempt
 def profile_page(request):
+    carts = request.session.get('cart', {}) 
+    product_count = len(carts)
     user = request.user
     print(user,'userrrrrrrrrrrrrrrrrrrrrrrrrr')
-    context = {'profile':user}
+    context = {'profile':user,'product_count':product_count}
     return render(request,'profile.html',context)
 
 
 @csrf_exempt
 def edit_page(request):
+    carts = request.session.get('cart', {}) 
+    product_count = len(carts)
     user = request.user
-    context = {'edit':user}
+    context = {'edit':user,'product_count':product_count}
     if request.method =="POST":
         username = request.POST.get('username')
         print(username,'this userrrrrrrrrrrrrrrrrrrrrr')
@@ -314,6 +440,16 @@ def change_password(request):
 
 
     return render(request,'change-password.html')
+
+
+@csrf_exempt
+def password_change(request):
+   if request.method == "POST":
+       email = request.POST.get('email')
+       print('This is the email form input :-',email)
+
+   return render(request,'password-change-login.html')
+
 
 
 

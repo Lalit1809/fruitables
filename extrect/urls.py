@@ -23,5 +23,8 @@ urlpatterns = [
     path('forgot-password/',views.password_forgot,name='forgot-password'),
     path('otp/',views.enter_otp,name='otp'),
     path('change-password/',views.change_password,name='c-password'),
+    path('update_cart/', views.update_cart,name="update-cart"),
+    path('payment/',views.payment,name='payment'),
+    path('password-change/',views.password_change,name='p-change'),
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
