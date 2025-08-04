@@ -444,11 +444,54 @@ def change_password(request):
 
 @csrf_exempt
 def password_change(request):
-   if request.method == "POST":
-       email = request.POST.get('email')
-       print('This is the email form input :-',email)
+    if request.method == "POST":
+        email = request.POST.get('email')
+        print('This is the email form input :-', email)
 
-   return render(request,'password-change-login.html')
+        try:
+            user = User.objects.get(email=email)
+            subject = "Password Reset Link"
+            message = f"Hi {user.username},\nClick the link below to reset your password:\nhttp://127.0.0.1:8000/new-confrim-password/?email={email}"
+            from_email = settings.EMAIL_HOST_USER
+            recipient_list = [email]
+
+            send_mail(subject, message, from_email, recipient_list)
+            return redirect('home')  # Home page name
+
+        except User.DoesNotExist:
+            return HttpResponse("User with this email doesn't exist.")
+
+    return render(request, 'password-change-login.html')
+
+
+@csrf_exempt
+def new_confrim_change(request):
+    email = request.GET.get('email')
+    if not email:
+        return HttpResponse("Invalid or expired link.")
+
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return HttpResponse("User not found.")
+
+    if request.method == "POST":
+        new_password = request.POST.get('new-password')
+        confirm_password = request.POST.get('confrim-password')
+
+        if new_password != confirm_password:
+            return HttpResponse("Passwords do not match.")
+
+        # ✅ Check if new password is same as current
+        if check_password(new_password, user.password):
+            return HttpResponse("New password cannot be the same as the old password.")
+
+        # ✅ All good, update password
+        user.set_password(new_password)
+        user.save()
+        return redirect('home')
+
+    return render(request, 'new-confrim-password.html')
 
 
 
