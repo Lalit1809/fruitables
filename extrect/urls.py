@@ -24,8 +24,9 @@ urlpatterns = [
     path('otp/',views.enter_otp,name='otp'),
     path('change-password/',views.change_password,name='c-password'),
     path('update_cart/', views.update_cart,name="update-cart"),
-    path('payment/',views.payment,name='payment'),
+    path('payment/<int:order_id>',views.payment,name='payment'),
     path('password-change/',views.password_change,name='p-change'),
     path('new-confrim-password/',views.new_confrim_change,name="new-confrim-password"),
+    path('payment-status/<int:order_id>',views.payment_status,name='payment-status'),
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

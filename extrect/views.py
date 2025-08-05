@@ -1,3 +1,4 @@
+import razorpay
 from django.shortcuts import render
 from django.contrib.auth.hashers import make_password,check_password
 import random
@@ -10,11 +11,16 @@ from django.http import JsonResponse,HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
+
 # def category(request, slug):
 #     categorys = get_object_or_404(Category,slug=slug)
 #     products = Product.objects .filter(category=category)
 #     context = {'category':categorys,'product':products}
 #     return render(request, '')
+
+# client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+
 
 def home(request):
     carts = request.session.get('cart', {}) 
@@ -193,7 +199,7 @@ def chackout(request):
 
             
             messages.success(request, "Order placed successfully.")
-            return redirect('payment')
+            return redirect('payment',order.id)
 
         return render(request, 'chackout.html', context)
 
@@ -201,8 +207,8 @@ def chackout(request):
             messages.error(request, 'Cart is empty :-')
             return redirect('cart')
 
-
-def payment (request):
+@csrf_exempt
+def payment (request,order_id):
     carts = request.session.get('cart', {}) 
     product_count = len(carts)
     cart_items = []
@@ -218,7 +224,28 @@ def payment (request):
             total_quantity = quantity + total_quantity
             cart_items.append({'prod':prod,'quantity':quantity,"item_price":item_price})
             context = {'cart_items':cart_items,'total_price':total_price, 'total_quantity': total_quantity,'product_count':product_count}
-            
+
+            # ✅ Razorpay: Create Order
+            client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+            DATA = {
+                "amount": total_price * 100,  # amount in paise
+                "currency": "INR",
+                "payment_capture": 1,
+                }
+            payment_order = client.order.create(data=DATA)
+            payment_order_id = payment_order['id']
+
+            # Pass required data to Razorpay in template
+            context = {
+                'cart_items': cart_items,
+                'total_price': total_price,
+                'total_quantity': total_quantity,
+                'product_count': product_count,
+                'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+                'order_id': payment_order_id,
+                'amount': total_price,
+                'real_order_id': order_id,
+            }           
         
         return render(request, 'payment.html', context)
 
@@ -226,6 +253,18 @@ def payment (request):
         messages.error(request, 'Cart is empty :-')
 
     return render(request,"payment.html")
+
+# view for payment page:------
+@csrf_exempt
+def payment_status(request, order_id):
+    print(order_id,"orderrrrrrrrrrrrrrridddddd")
+    order = get_object_or_404(Order, id=order_id)
+    print(order, 'this is order')
+    if order:
+        order.status ='paid'
+        order.save()
+        print(order.status,'This is status')
+    return render(request, 'payment-status.html')
 
 
 
@@ -492,6 +531,7 @@ def new_confrim_change(request):
         return redirect('home')
 
     return render(request, 'new-confrim-password.html')
+
 
 
 

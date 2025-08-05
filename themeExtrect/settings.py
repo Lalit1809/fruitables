@@ -137,3 +137,8 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'jangidlalit1802@gmail.com'
 EMAIL_HOST_PASSWORD = 'gfrd lrmn tkjq kiki'
+
+
+# Razorpay credentials
+RAZORPAY_KEY_ID = "rzp_test_S3mPGgntaUBTwB"
+RAZORPAY_KEY_SECRET = "wjssHQvG6FVvMuMDkIeoTzo2"

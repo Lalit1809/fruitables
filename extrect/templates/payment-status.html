@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Successful</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .success-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .success-icon {
+            font-size: 60px;
+            color: #22c55e;
+        }
+
+        .success-message {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #16a34a;
+        }
+
+        .info-message {
+            font-size: 16px;
+            margin-top: 10px;
+            color: #64748b;
+        }
+
+        .home-btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 25px;
+            background-color: #16a34a;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .home-btn:hover {
+            background-color: #15803d;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-icon">✔️</div>
+        <div class="success-message">Payment Successful</div>
+        <div class="info-message">
+            Thank you for your purchase! Your order has been placed and is being processed.
+        </div>
+        <a href="{% url 'home' %}" class="home-btn">Go to Home</a>
+    </div>
+</body>
+</html>
