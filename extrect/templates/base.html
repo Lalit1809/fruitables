@@ -58,6 +58,7 @@
                         <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
                         <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small>/</a> -->
                     {% if request.user.is_authenticated %}
+                    <a href="{% url 'order-history' %}" class="text-white"><small class="text-white ms-2">Order History</small>/</a>
                     <a href="{% url 'p-change' %}" class="text-white"><small class="text-white ms-2">Change Password</small>/</a>
                     <a href="{% url 'send-email' %}" class="text-white"><small class="text-white ms-2">Email</small>/</a>
                     <a href="{% url 'sign_out' %}" class="text-white"><small class="text-white ms-2">Logout</small></a>
@@ -111,6 +112,9 @@
                         {% if request.user.is_authenticated %}
                         <a href="{% url 'profile' %}" class="my-auto">
                             <i class="fas fa-user fa-2x"></i>
+                        </a>
+                        <a href="{% url 'wishlist' %}" class="my-auto">
+                            <i style="margin-left: 15px;font-size: 32px;" class="fa fa-heart" aria-hidden="true"></i>
                         </a>
                         {% endif %}
                     </div>

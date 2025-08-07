@@ -73,6 +73,23 @@ def cart(request):
         messages.error(request, 'Cart is empty :-')
         return render(request, 'cart.html')
     
+# create a view for order-cancelled
+@csrf_exempt
+def order_cencelled(request):
+    if request.method == "POST":
+        action=request.POST.get('action')
+        order_id = request.POST.get('order_id')
+        print(action,'this is action which is comming from ajax')
+        print(order_id,'this is product id which is commimg from ajax')
+        order = Order.objects.get(id=order_id)
+        print(order,'this is order')
+        if order:
+         order.status ='Cancelled'
+         order.save()
+         status=order.status
+         print(status,'this is status')
+
+    return JsonResponse({'success':True,'order_status':status})   
 
 # create a viewss for update_card quentity and price
 @csrf_exempt
@@ -208,7 +225,7 @@ def chackout(request):
             return redirect('cart')
 
 @csrf_exempt
-def payment (request,order_id):
+def payment(request,order_id):
     carts = request.session.get('cart', {}) 
     product_count = len(carts)
     cart_items = []
@@ -261,7 +278,7 @@ def payment_status(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     print(order, 'this is order')
     if order:
-        order.status ='paid'
+        order.status ='Paid'
         order.save()
         print(order.status,'This is status')
     return render(request, 'payment-status.html')
@@ -521,16 +538,60 @@ def new_confrim_change(request):
         if new_password != confirm_password:
             return HttpResponse("Passwords do not match.")
 
-        # ✅ Check if new password is same as current
         if check_password(new_password, user.password):
             return HttpResponse("New password cannot be the same as the old password.")
 
-        # ✅ All good, update password
         user.set_password(new_password)
         user.save()
         return redirect('home')
 
     return render(request, 'new-confrim-password.html')
+
+# create a view for order history
+def order_history(request):
+    order=Order.objects.all()
+    context ={'order':order}
+    print(order,'this is order')
+    return render(request,'order-history.html',context)
+
+
+
+def add_wishlist(request,product_id=None):
+    if product_id:
+        product=get_object_or_404(Product,id=product_id)
+        wishlist = Wishlist.objects.create(user=request.user,product=product)
+        print(wishlist,"wishhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+        print(product.id,'this is product')
+        return redirect('wishlist')
+    else:
+        wish = Wishlist.objects.filter(user=request.user)
+        context = {'wishlist':wish}
+        return render(request,'wishlist.html',context)
+    
+def revome_wishlist(request,product_id):
+    print(product_id,'this is ppppppppppppppppppppppppppid')
+    product = get_object_or_404(Wishlist,id=product_id)
+    print(product,'this is ppppppppppppppppppppppppppppp')
+    product.delete()
+
+    return redirect('wishlist')
+
+
+    # user = request.user
+    # wish = Wishlist.objects.filter(user=user)
+    # print(wish,"wishhhhhhhhhhhhhhh")
+    # if wish:
+    #     return render(request,'wishlist.html',{'wishlist':wish})
+    # else:
+    #     product=get_object_or_404(Product,id=product_id)
+    #     wishlist = Wishlist.objects.create(user=user,product=product)
+    #     print(wishlist,"wishhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+    #     print(user,'this is user')
+    #     print(product,'this is product')
+    # context = {'user':user,'wishlist':wish}
+    # return render(request,'wishlist.html')
+
+
 
 
 

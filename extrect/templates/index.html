@@ -164,7 +164,7 @@
                                             style="top: 10px; left: 10px;">Fruits</div>
                                         <div class="p-4 border border-secondary border-top-0 rounded-bottom">
                                             <h4>{{ product.title }}</h4>
-                                            <p>{{ product.detail |truncatechars:84 }}</p>
+                                            <p>{{ product.detail |truncatechars:85 }}</p>
                                             <div class="d-flex justify-content-between flex-lg-wrap">
                                                 <p class="text-dark fs-5 fw-bold mb-0">{{ product.price }}</p>
                                                 {% if request.user.is_authenticated %}
@@ -172,14 +172,16 @@
                                                     class="btn border border-secondary rounded-pill px-3 text-primary"><i
                                                         class="fa fa-shopping-bag me-2 text-primary"></i> Add to
                                                     cart</a>
+                                                    <a href="{% url 'add-wishlist' product_id=product.id %}">
+                                                    <i style="margin-top: 5px;font-size: 25px;color: red;" class="fa fa-heart" aria-hidden="true"></i>
+                                                    </a>
                                                     {% endif %}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 {% endfor %}
-                                <!-- product code end -->
-                               
+                                <!-- product code end -->                                 
                             </div>
                         </div>
                     </div>

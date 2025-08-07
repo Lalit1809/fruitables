@@ -27,6 +27,11 @@ urlpatterns = [
     path('payment/<int:order_id>',views.payment,name='payment'),
     path('password-change/',views.password_change,name='p-change'),
     path('new-confrim-password/',views.new_confrim_change,name="new-confrim-password"),
-    path('payment-status/<int:order_id>',views.payment_status,name='payment-status'),
+    path('payment-status/<int:order_id>/',views.payment_status,name='payment-status'),
+    path('order-history/',views.order_history,name="order-history"),
+    path('order-cancelled/',views.order_cencelled,name='order-cancelled'),
+    path('wishlist/<int:product_id>',views.add_wishlist,name='add-wishlist'),
+    path('wishlist/',views.add_wishlist,name='wishlist'),
+    path('remove-wishlist/<int:product_id>',views.revome_wishlist,name='remove-wishlist')
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
